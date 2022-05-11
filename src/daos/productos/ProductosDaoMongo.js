@@ -1,15 +1,14 @@
 import { DateTime } from "luxon";
-import fs from 'fs';
-import __dirname from '../../utils.js';
-import ContenedorMem from "../../contenedores/contenedorMem.js";
+import ContenedorMongo from "../../contenedores/contenedorMongo.js";
+import productosSchema from "../../config.js"
 
-export default class ProductosDaoMem extends ContenedorMem { 
+export default class ProductosDaoMongo extends ContenedorMongo { 
     constructor() {
-        super('products') // se carga la informacion de productos desde memoria
+        super(productosSchema,'productos') // se carga la informacion de productos desde filesystem
     }
-    guardar (title,description,code,thumbnail,price,stock){
+    async guardar (title,description,code,thumbnail,price,stock){
             let id = 0;
-            let productos = this.leerMem() 
+            let productos = await this.leerMongo() 
             if(productos.length) id=productos[productos.length-1].id; // Se asigna id 1 si no hay productos
             let dt = DateTime.now() //se toma el dia
             let timestamp=dt.toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS)
@@ -23,31 +22,26 @@ export default class ProductosDaoMem extends ContenedorMem {
                 price:price,
                 stock:stock
             }   
-            productos.push(productoActual);// se agregan a productos
-            this.guardarMem(productos)
+            await this.agregarMongo(productoActual)
             return id //se retorna id
     }
 
-    leer() {
-        let productos = this.leerMem() 
+    async leer() {
+        let productos = await this.leerMongo() 
         return productos //se retorna Json de productos
     }
 
-    leerId(pid) {
-        let productos = this.leerMem() 
+    async leerId(pid) {
+        let productos = await this.leerMongo() 
         let content = productos.find(content=>content.id == pid) // se llama  a leer pero solo se toma el elememento de ese ID
         return content
     }
 
-    borrar(id) {
-        let productos = this.leerMem() 
-        productos = productos.filter((products)=>products.id != id) // se elimina el producto con el id recibido
-        this.guardarMem(productos)
+    async borrar(id) {
+        await this.borrarMongo(id) 
     }
 
-    modificar(title,description,code,thumbnail,price,stock,id){
-        let productos = this.leerMem() 
-        productos = productos.filter((productos)=>productos.id != id) //se elimina el producto con el id recibido
+    async modificar(title,description,code,thumbnail,price,stock,id){
         let dt = DateTime.now() //se toma el dia
         let timestamp=dt.toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS)
         const productoActual = { //se guarda el producto con los nuevos valores
@@ -60,8 +54,6 @@ export default class ProductosDaoMem extends ContenedorMem {
             price:price,
             stock:stock
         }   
-        productos.push(productoActual); // se agrega a productos
-        productos.sort((a,b)=>a.id-b.id) // se ordena por ID
-        this.guardarMem(productos);
+        await this.modificarMongo(productoActual,id);
     }
 }

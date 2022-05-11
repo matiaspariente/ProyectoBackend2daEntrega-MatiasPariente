@@ -3,7 +3,6 @@ import __dirname from '../utils.js';
 
 export default class ContenedorArchivo{ // contenedor Archivos
     constructor(archivo){
-        console.log("prueba")
         this.archivo = archivo;
     }
 

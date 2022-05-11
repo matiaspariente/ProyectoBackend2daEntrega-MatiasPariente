@@ -1,6 +1,8 @@
 import express from "express";
 import io from "../app.js";
 import CarritosDaoArchivo from "../daos/carritos/CarritosDaoArchivo.js";
+import CarritosDaoMem from "../daos/carritos/CarritosDaoMem.js";
+import CarritosDaoMongo from "../daos/carritos/CarritosDaoMongo.js";
 
 const router = express.Router();
 

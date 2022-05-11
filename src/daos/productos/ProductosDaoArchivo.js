@@ -60,7 +60,6 @@ export default class ProductosDaoArchivo extends ContenedorArchivo {
         }   
         productos.push(productoActual); // se agrega a productos
         productos.sort((a,b)=>a.id-b.id) // se ordena por ID
-        fs.writeFileSync(__dirname+'/fs/products/products.txt',JSON.stringify(this.productos));
         await this.guardarArchivo(productos);
     }
 }

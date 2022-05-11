@@ -2,12 +2,13 @@ import express from "express";
 import io from "../app.js";
 import ProductosDaoArchivo from "../daos/productos/productosDaoArchivo.js";
 import ProductosDaoMem from "../daos/productos/ProductosDaoMem.js";
+import ProductosDaoMongo from "../daos/productos/ProductosDaoMongo.js";
 
 const administrator = true; //true: Admin  False: user
 
 const router = express.Router();
 
-const managerProductos = new ProductosDaoMem();
+const managerProductos = new ProductosDaoMongo();
 
 const administratorCheck = (req,res,next) =>{ // middleware de verificacion de administrador  a traves de booleano
     if(administrator) next()
